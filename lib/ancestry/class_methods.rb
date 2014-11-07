@@ -160,7 +160,7 @@ module Ancestry
     end
 
     # Build ancestry from parent id's for migration purposes with ordering preserved
-    def build_ancestry_from_parent_ids! parent_id = nil, ancestry = nil
+    def build_ordered_ancestry_from_parent_ids! parent_id = nil, ancestry = nil
       raise 'acts_as_list required' unless defined? ActiveRecord::Acts::List
       
       self.base_class.send(:with_exclusive_scope) do
