@@ -162,17 +162,17 @@ module Ancestry
     # Build ancestry from parent id's for migration purposes with ordering preserved
     def build_ordered_ancestry_from_parent_ids! parent_id = nil, ancestry = nil
       raise 'acts_as_list required' unless defined? ActiveRecord::Acts::List
+      build_ancestry_from_parent_ids!
+      rebuild_ordering!
+    end
+
+    def rebuild_ordering!(node=nil)
+      index = 1
       
-      self.base_class.send(:with_exclusive_scope) do
-        self.base_class.find_each(:conditions => {:parent_id => parent_id}) do |node|
-          index = 1
-          node.without_ancestry_callbacks do
-            node.update_attribute ancestry_column, ancestry
-            node.update_attribute :position, index
-          end
-          index += 1
-          build_ancestry_from_parent_ids! node.id, if ancestry.nil? then "#{node.id}" else "#{ancestry}/#{node.id}" end
-        end
+      MobileTag.find_all_by_parent_id(node.try(:id), :order => 'lft ASC').each do |child|
+        child.update_attribute(:position, index)
+        MobileTag.rebuild_ordering!(child)
+        index += 1
       end
     end
     
