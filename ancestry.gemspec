@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   orphaned records.
 EOF
 
-  s.version = '2.2.0'
+  s.version = '2.2.1'
 
   s.author   = 'Stefan Kroes'
   s.email    = 's.a.kroes@gmail.com'
