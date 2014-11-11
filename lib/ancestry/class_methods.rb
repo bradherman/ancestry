@@ -181,6 +181,23 @@ module Ancestry
       end
     end
 
+    # Build ancestry from parent id's for migration purposes with ordering preserved
+    def build_ordered_ancestry_from_parent_ids! parent_id = nil, ancestry = nil
+      raise 'acts_as_list required' unless defined? ActiveRecord::Acts::List
+      build_ancestry_from_parent_ids!
+      rebuild_ordering!
+    end
+
+    def rebuild_ordering!(node=nil)
+      index = 1
+      
+      MobileTag.find_all_by_parent_id(node.try(:id), :order => 'lft ASC').each do |child|
+        child.update_attribute(:position, index)
+        MobileTag.rebuild_ordering!(child)
+        index += 1
+      end
+    end
+
     # Rebuild depth cache if it got corrupted or if depth caching was just turned on
     def rebuild_depth_cache!
       raise Ancestry::AncestryException.new("Cannot rebuild depth cache for model without depth caching.") unless respond_to? :depth_cache_column
