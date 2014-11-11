@@ -1,4 +1,13 @@
 class << ActiveRecord::Base
+  def has_ordered_ancestry options = {}
+    raise 'acts_as_list required' unless defined? ActiveRecord::Acts::List
+    has_ancestry options
+    acts_as_list :scope => [:ancestry]
+    default_scope :order => "position ASC"
+
+    include Ancestry::List::InstanceMethods
+  end
+  
   def has_ancestry options = {}
     # Check options
     raise Ancestry::AncestryException.new("Options for has_ancestry must be in a hash.") unless options.is_a? Hash
