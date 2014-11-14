@@ -272,6 +272,8 @@ module Ancestry
       !!@disable_ancestry_callbacks
     end
 
+    alias_method :move_to_child_of, :parent=
+
   private
 
     def cast_primary_key(key)

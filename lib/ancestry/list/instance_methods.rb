@@ -1,15 +1,6 @@
 module Ancestry
   module List
     module InstanceMethods
-      def move_to_child_of(reference_instance)
-        transaction do
-          remove_from_list
-          self.update_attribute(:parent, reference_instance)
-          add_to_list_bottom
-          save!
-        end
-      end
-
       def move_to_left_of(reference_instance)
         transaction do
           remove_from_list
